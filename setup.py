@@ -20,6 +20,8 @@ setup(
     maintainer_email='Grokzen@gmail.com',
     license='MIT',
     packages=['pykwalify'],
+    package_dir={'pykwalify': 'pykwalify'},
+    package_data={'pykwalify': ['data/*.template']},
     url='http://github.com/grokzen/pykwalify',
     extras_require={
         'ruamel': ["ruamel.yaml>=0.11.0,<0.12.0"],
