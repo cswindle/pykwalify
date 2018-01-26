@@ -13,30 +13,40 @@ class ${class_name}(object):
 % for (name, entry) in items.iteritems():
 
     % if entry.get('type') == 'map':
-        if '${name}' in document:
-            self._${name.replace('-', '_')} = ${entry['class']}(document['${name}'])
+        if document:
+            ${name.replace('-', '_')} = document.get('${name}')
         else:
-            self._${name.replace('-', '_')} = None
+            ${name.replace('-', '_')} = None
+        self._${name.replace('-', '_')} = ${entry['class']}(${name.replace('-', '_')})
     % elif entry.get('type') == 'seq':
       % if 'class' in entry['sequence'][0]:
         self._${name.replace('-', '_')} = []
-        for entry in document.get('${name}', []):
-            self._${name.replace('-', '_')}.append(${entry['sequence'][0]['class']}(entry))
+        if document:
+            for entry in document.get('${name}', []):
+                self._${name.replace('-', '_')}.append(${entry['sequence'][0]['class']}(entry))
       % else:
-        self._${name.replace('-', '_')} = document.get('${name}', [])
+        if document:
+            ${name.replace('-', '_')} = document.get('${name}', [])
+        else:
+            ${name.replace('-', '_')} = None
+        self._${name.replace('-', '_')} = None
       % endif
     % else:
-        self._${name.replace('-', '_')} = document.get(
-            '${name}',
-        % if 'default' in entry:
-          % if entry['type'] == 'str':
-            '${entry.get('default')}')
-          % else:
-            ${entry.get('default')})
-          % endif
-        % else:
-            None)
-        % endif
+        if document:
+            ${name.replace('-', '_')} = document.get(
+                '${name}',
+            % if 'default' in entry:
+              % if entry['type'] == 'str':
+                '${entry.get('default')}')
+              % else:
+                ${entry.get('default')})
+              % endif
+            % else:
+                None)
+            % endif
+        else:
+            ${name.replace('-', '_')} = '${entry.get('default')}'
+        self._${name.replace('-', '_')} = ${name.replace('-', '_')}
     % endif
 % endfor
 % for (name, entry) in items.iteritems():
