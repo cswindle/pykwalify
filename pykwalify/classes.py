@@ -9,8 +9,10 @@ import mako.template
 def generate_classes(schema):
 
     if schema['type'] == 'map':
-        # template_values = _generate_template_values(schema)
-        # print template_values
+
+        imports = []
+        for (name, entry) in schema['mapping'].iteritems():
+            imports += _find_imports(entry)
 
         with open(pkg_resources.resource_filename('pykwalify', 'data/python_classes.template')) as f:
             template = f.read()
@@ -20,49 +22,28 @@ def generate_classes(schema):
             with open(class_filename, 'w') as class_file:
 
                 class_file.write((mako.template.Template(template).render(
+                    imports=imports,
                     items=schema['mapping'],
                     class_name=class_name)))
 
         for (name, mapping) in schema['mapping'].iteritems():
             generate_classes(mapping)
 
-    # elif schema['type'] == 'seq':
-    #     for entry in schema['sequence']:
-    #         generate_classes(entry)
+    elif schema['type'] == 'seq':
+        generate_classes(schema['sequence'][0])
 
 
-# def _generate_template_values(schema):
+def _find_imports(schema):
+    imports = []
 
-#     class_name = schema['class']
+    if schema['type'] == 'map':
+        imports.append((
+            inflection.underscore(schema['class']),
+            schema['class']))
 
-#     template_values = {
-#         'class': class_name,
-#         'maps': [],
-#         'seqs': [],
-#         'simple': [],
-#     }
+    elif schema['type'] == 'seq':
+        entry = schema['sequence'][0]
 
-#     for (name, entry) in schema['mapping'].iteritems():
-#         print "{0} {1}".format(name, entry['type'])
+        imports += _find_imports(entry)
 
-#         if entry['type'] == "map":
-#             template_values['maps'].append({
-#                 'name': name,
-#                 'class': entry['class']
-#             })
-
-#         elif entry['type'] == "seq":
-#             assert(len(entry['sequence']) == 1)
-
-#             template_values['seqs'].append({
-#                 'name': name,
-#                 'entries': _generate_template_values(entry['sequence'][0])
-#             })
-
-#         else:
-#             template_values['simple'].append({
-#                 'name': name,
-#                 'default': entry.get('default'),
-#             })
-
-#     return template_values
+    return imports
