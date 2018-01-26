@@ -314,6 +314,7 @@ class Rule(object):
         defined_keywords = [
             ('allowempty_map', 'allowempty_map'),
             ('assertion', 'assertion'),
+            ('class', 'class'),
             ('default', 'default'),
             ('desc', 'desc'),
             ('enum', 'enum'),
@@ -398,6 +399,7 @@ class Rule(object):
         func_mapping = {
             "allowempty": self.init_allow_empty_map,
             "assert": self.init_assert_value,
+            "class": self.init_class_value,
             "default": self.init_default_value,
             "desc": self.init_desc_value,
             "enum": self.init_enum_value,
@@ -747,6 +749,21 @@ class Rule(object):
             )
 
         self.desc = v
+
+    def init_class_value(self, v, rule, path):
+        """
+        """
+        log.debug(u"Init descr value : %s", path)
+
+        if not isinstance(v, basestring):
+            raise RuleError(
+                msg=u"Value: {0} for keyword class must be a string".format(v),
+                error_key=u"desc.not_string",
+                path=path,
+            )
+
+        self.desc = v
+
 
     def init_required_value(self, v, rule, path):
         """
@@ -1185,6 +1202,7 @@ class Rule(object):
         All supported keywords:
          - allowempty_map
          - assertion
+         - class
          - date
          - default
          - desc
@@ -1221,7 +1239,7 @@ class Rule(object):
             'float': global_keywords + ['default', 'enum', 'range', 'required'],
             'number': global_keywords + ['default', 'enum'],
             'bool': global_keywords + ['default', 'enum'],
-            'map': global_keywords + ['allowempty_map', 'mapping', 'map', 'allowempty', 'required', 'matching-rule', 'range'],
+            'map': global_keywords + ['allowempty_map', 'mapping', 'map', 'allowempty', 'required', 'matching-rule', 'range', 'class'],
             'seq': global_keywords + ['sequence', 'seq', 'required', 'range', 'matching'],
             'sequence': global_keywords + ['sequence', 'seq', 'required'],
             'mapping': global_keywords + ['mapping', 'seq', 'required'],

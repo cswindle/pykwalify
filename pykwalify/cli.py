@@ -27,6 +27,7 @@ def parse_cli():
     __docopt__ = """
 usage: pykwalify -d FILE -s FILE ... [-e FILE ...]
        [--strict-rule-validation] [--fix-ruby-style-regex] [--allow-assertions] [-v ...] [-q]
+       pykwalify --classes -s FILE
 
 optional arguments:
   -d FILE, --data-file FILE            the file to be tested
@@ -43,6 +44,7 @@ optional arguments:
   -q, --quiet                          suppress terminal output
   -v, --verbose                        verbose terminal output (multiple -v increases verbosity)
   --version                            display the version number and exit
+  --classes                            generate Python classes for the definition
 """
 
     # Import pykwalify package
@@ -79,7 +81,11 @@ def run(cli_args):
         fix_ruby_style_regex=cli_args['--fix-ruby-style-regex'],
         allow_assertions=cli_args['--allow-assertions'],
     )
-    c.validate()
+
+    if cli_args["--classes"]:
+        c.generate_classes()
+    else:
+        c.validate()
     return c
 
 

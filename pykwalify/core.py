@@ -19,6 +19,7 @@ from pykwalify.compat import unicode, nativestr, basestring
 from pykwalify.errors import CoreError, SchemaError, NotMappingError, NotSequenceError
 from pykwalify.rule import Rule
 from pykwalify.types import is_scalar, is_string, tt
+from pykwalify.classes import generate_classes
 
 # 3rd party imports
 from pykwalify.compat import yaml
@@ -119,8 +120,6 @@ class Core(object):
             self.schema = schema_data
 
         # Test if anything was loaded
-        if self.source is None:
-            raise CoreError(u"No source file/data was loaded")
         if self.schema is None:
             raise CoreError(u"No schema file/data was loaded")
 
@@ -160,6 +159,10 @@ class Core(object):
         """
         """
         log.debug(u"starting core")
+
+        # In order to validate the schema we need a source file
+        if self.source is None:
+            raise CoreError(u"No source file/data was loaded")
 
         self._start_validate(self.source)
         self.validation_errors = [unicode(error) for error in self.errors]
@@ -977,3 +980,9 @@ class Core(object):
             # Type not found in valid types mapping
             log.debug(e)
             raise CoreError(u"Unknown type check: {0!s} : {1!s} : {2!s}".format(path, value, t))
+
+    def generate_classes(self):
+        """
+        Generate classes for the service definition provided.
+        """
+        generate_classes(self.schema)
