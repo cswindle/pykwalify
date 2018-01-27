@@ -3,10 +3,14 @@
 """ pyKwalify - classes.py """
 
 import inflection
+import os
 import pkg_resources
 import mako.template
 
-def generate_classes(schema):
+def generate_classes(schema, output=None):
+
+    if not output:
+        output = "."
 
     if schema['type'] == 'map':
 
@@ -18,7 +22,9 @@ def generate_classes(schema):
             template = f.read()
 
             class_name = schema['class']
-            class_filename = "{0}.py".format(inflection.underscore(class_name))
+            class_filename = os.path.join(
+                output,
+                "{0}.py".format(inflection.underscore(class_name)))
             with open(class_filename, 'w') as class_file:
 
                 class_file.write((mako.template.Template(template).render(
@@ -27,10 +33,10 @@ def generate_classes(schema):
                     class_name=class_name)))
 
         for (name, mapping) in schema['mapping'].iteritems():
-            generate_classes(mapping)
+            generate_classes(mapping, output)
 
     elif schema['type'] == 'seq':
-        generate_classes(schema['sequence'][0])
+        generate_classes(schema['sequence'][0], output)
 
 
 def _find_imports(schema):

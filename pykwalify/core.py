@@ -981,8 +981,8 @@ class Core(object):
             log.debug(e)
             raise CoreError(u"Unknown type check: {0!s} : {1!s} : {2!s}".format(path, value, t))
 
-    def generate_classes(self):
+    def generate_classes(self, output=None):
         """
         Generate classes for the service definition provided.
         """
-        generate_classes(self.schema)
+        generate_classes(self.schema, output)
