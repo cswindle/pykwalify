@@ -36,6 +36,7 @@ setup(
         'PyYAML>=3.11',
         'python-dateutil>=2.4.2',
         'inflection>=0.3.1',
+        'Mako>=1.0.7',
     ],
     classifiers=(
         # 'Development Status :: 1 - Planning',
