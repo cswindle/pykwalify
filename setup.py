@@ -35,6 +35,7 @@ setup(
         'docopt>=0.6.2',
         'PyYAML>=3.11',
         'python-dateutil>=2.4.2',
+        'inflection>=0.3.1',
     ],
     classifiers=(
         # 'Development Status :: 1 - Planning',
