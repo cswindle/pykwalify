@@ -16,6 +16,7 @@ from ${module} import ${object}
 class ${class_name}(object):
 
     def __init__(self, document):
+        self._items = {}
 % for (name, entry) in items.iteritems():
 
     % if entry.get('type') == 'map':
@@ -46,7 +47,18 @@ class ${class_name}(object):
             ${name.replace('-', '_')} = ${quote_string_values(entry, entry.get('default'))}
         self._${name.replace('-', '_')} = ${name.replace('-', '_')}
     % endif
+        if document and document.get('${name}'):
+            self._items['${name}'] = self._${name.replace('-', '_')}
 % endfor
+
+    def __iter__(self):
+        return self._items.__iter__()
+
+    def __next__(self):
+        return self._items.__next__()
+
+    def iteritems(self):
+        return self._items.iteritems()
 % for (name, entry) in items.iteritems():
 
     @property
