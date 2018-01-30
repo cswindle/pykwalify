@@ -20,10 +20,13 @@ from pykwalify.errors import CoreError, SchemaError, NotMappingError, NotSequenc
 from pykwalify.rule import Rule
 from pykwalify.types import is_scalar, is_string, tt
 from pykwalify.classes import generate_classes
+from pykwalify.docs import generate_docs
 
 # 3rd party imports
 from pykwalify.compat import yaml
 from dateutil.parser import parse
+
+import yamlordereddictloader
 
 log = logging.getLogger(__name__)
 
@@ -74,7 +77,7 @@ class Core(object):
                         raise CoreError(u"Unable to load any data from source json file")
                 elif source_file.endswith(".yaml") or source_file.endswith('.yml'):
                     try:
-                        self.source = yaml.load(stream)
+                        self.source = yaml.load(stream, Loader=yamlordereddictloader.Loader)
                     except Exception:
                         raise CoreError(u"Unable to load any data from source yaml file")
                 else:
@@ -97,7 +100,7 @@ class Core(object):
                         except Exception:
                             raise CoreError(u"No data loaded from file : {0}".format(f))
                     elif f.endswith(".yaml") or f.endswith(".yml"):
-                        data = yaml.load(stream)
+                        data = yaml.load(stream, Loader=yamlordereddictloader.Loader)
                         if not data:
                             raise CoreError(u"No data loaded from file : {0}".format(f))
                     else:
@@ -986,3 +989,7 @@ class Core(object):
         Generate classes for the service definition provided.
         """
         generate_classes(self.schema, output)
+
+    def generate_docs(self, output=None):
+
+        generate_docs(self.schema, output)

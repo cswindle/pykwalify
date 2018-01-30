@@ -27,7 +27,7 @@ def parse_cli():
     __docopt__ = """
 usage: pykwalify -d FILE -s FILE ... [-e FILE ...]
        [--strict-rule-validation] [--fix-ruby-style-regex] [--allow-assertions] [-v ...] [-q]
-       pykwalify --classes -s FILE [-o DIR]
+       pykwalify [--classes] [--doc-api] -s FILE [-o DIR]
 
 optional arguments:
   -d FILE, --data-file FILE            the file to be tested
@@ -45,6 +45,7 @@ optional arguments:
   -v, --verbose                        verbose terminal output (multiple -v increases verbosity)
   --version                            display the version number and exit
   --classes                            generate Python classes for the definition
+  --doc-api                            produce documentation for the API
   -o DIR, --output DIR                 output directory for Python classes
 """
 
@@ -83,8 +84,10 @@ def run(cli_args):
         allow_assertions=cli_args['--allow-assertions'],
     )
 
-    if cli_args["--classes"]:
+    if cli_args['--classes']:
         c.generate_classes(cli_args['--output'])
+    elif cli_args['--doc-api']:
+        c.generate_docs(cli_args['--output'])
     else:
         c.validate()
     return c
