@@ -37,6 +37,7 @@ setup(
         'python-dateutil>=2.4.2',
         'inflection>=0.3.1',
         'Mako>=1.0.7',
+        'yamlordereddictloader>=0.4.0',
     ],
     classifiers=(
         # 'Development Status :: 1 - Planning',
