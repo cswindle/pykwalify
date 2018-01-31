@@ -31,15 +31,17 @@ def generate_examples(schema):
             if example is not None:
                 examples[entry] = example
 
-        return examples
+        if len(examples):
+            return examples
     elif schema['type'] == 'seq':
         examples = []
         for entry in schema['sequence']:
             examples.append(generate_examples(entry))
 
-        return examples
+        if len(examples):
+            return examples
     else:
         if 'example' in schema:
             return schema['example']
-        elif 'default' in schema:
-            return schema['default']
+
+    return None
