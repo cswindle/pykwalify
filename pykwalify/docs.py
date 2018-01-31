@@ -42,6 +42,9 @@ def generate_examples(schema):
             return examples
     else:
         if 'example' in schema:
-            return schema['example']
+            if schema['type'] == 'int':
+                return int(schema['example'])
+            else:
+                return schema['example']
 
     return None
