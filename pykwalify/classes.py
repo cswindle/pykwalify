@@ -18,6 +18,9 @@ def generate_classes(schema, output=None):
         for (name, entry) in schema['mapping'].iteritems():
             imports += _find_imports(entry)
 
+        # Get rid of any duplicates
+        imports = list(set(imports))
+
         with open(pkg_resources.resource_filename('pykwalify', 'data/python_classes.template')) as f:
             template = f.read()
 
