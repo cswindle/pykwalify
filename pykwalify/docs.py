@@ -36,7 +36,9 @@ def generate_examples(schema):
     elif schema['type'] == 'seq':
         examples = []
         for entry in schema['sequence']:
-            examples.append(generate_examples(entry))
+            example = generate_examples(entry)
+            if example:
+               examples.append(example)
 
         if len(examples):
             return examples
