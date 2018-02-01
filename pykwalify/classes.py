@@ -6,11 +6,14 @@ import inflection
 import os
 import pkg_resources
 import mako.template
+import shutil
 
 def generate_classes(schema, output=None):
 
     if not output:
         output = "."
+
+    shutil.copyfile(pkg_resources.resource_filename('pykwalify', 'data/utils.py'), os.path.join(output, "utils.py"))
 
     if schema['type'] == 'map':
 

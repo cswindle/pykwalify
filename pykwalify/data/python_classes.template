@@ -10,6 +10,8 @@ def quote_string_values(entry, value):
     else:
         return "{0}".format(value)
 %>
+import utils
+
 % for (module, object) in imports:
 from ${module} import ${object}
 
@@ -76,3 +78,7 @@ class ${class_name}(object):
     def ${name.replace('-', '_')}(self):
         return self._${name.replace('-', '_')}
 % endfor
+
+    def __add__(self, other):
+        combined_yaml = utils.merge(self._yaml_document, other._yaml_document)
+        return ${class_name}(combined_yaml)
