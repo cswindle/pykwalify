@@ -19,6 +19,8 @@ class ${class_name}(object):
 
     def __init__(self, document):
         self._items = {}
+
+        self._yaml_document = document
 % for (name, entry) in items.iteritems():
 
     % if entry.get('type') == 'map':
@@ -61,6 +63,13 @@ class ${class_name}(object):
 
     def iteritems(self):
         return self._items.iteritems()
+
+    @property
+    def yaml_document(self):
+        if self._yaml_document:
+            return self._yaml_document
+        else:
+            return {}
 % for (name, entry) in items.iteritems():
 
     @property
