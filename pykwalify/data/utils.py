@@ -2,10 +2,10 @@ def merge(d1, d2):
     """ Merges two dictionaries together.
         Updates d1 in place and returns it"""
 
-    if not d1:
+    if d1 is None:
         d1 = {}
 
-    if not d2:
+    if d2 is None:
         d2 = {}
 
     # iterate over all the keys in d1 and add to the
@@ -20,10 +20,12 @@ def merge(d1, d2):
                 d1[k] = remove_duplicates(d1[k], d2[k])
             else:
                 d1[k] = d2[k]
+
     # add all the keys to d1 that are only in d2
     for k in d2.keys():
         if k not in d1.keys():
             d1[k] = d2[k]
+
     # return the first dictionary, which has been updated
     return d1
 

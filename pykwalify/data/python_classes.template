@@ -10,6 +10,7 @@ def quote_string_values(entry, value):
     else:
         return "{0}".format(value)
 %>
+import copy
 import utils
 
 % for (module, object) in imports:
@@ -20,7 +21,7 @@ from ${module} import ${object}
 class ${class_name}(object):
 
     def __init__(self, document):
-        self._items = {}
+        self.__items = {}
 
         self._yaml_document = document
 % for (name, entry) in items.iteritems():
@@ -53,18 +54,17 @@ class ${class_name}(object):
             ${name.replace('-', '_')} = ${quote_string_values(entry, entry.get('default'))}
         self._${name.replace('-', '_')} = ${name.replace('-', '_')}
     % endif
-        if document and document.get('${name}'):
-            self._items['${name}'] = self._${name.replace('-', '_')}
+        self.__items['${name}'] = self._${name.replace('-', '_')}
 % endfor
 
     def __iter__(self):
-        return self._items.__iter__()
+        return self.__items.__iter__()
 
     def __next__(self):
-        return self._items.__next__()
+        return self.__items.__next__()
 
     def iteritems(self):
-        return self._items.iteritems()
+        return self.__items.iteritems()
 
     @property
     def yaml_document(self):
@@ -79,6 +79,10 @@ class ${class_name}(object):
         return self._${name.replace('-', '_')}
 % endfor
 
+    def __contains__(self, key):
+        return key in self.__items.keys()
+
     def __add__(self, other):
-        combined_yaml = utils.merge(self._yaml_document, other._yaml_document)
+        combined_yaml = copy.deepcopy(self._yaml_document)
+        combined_yaml = utils.merge(combined_yaml, other._yaml_document)
         return ${class_name}(combined_yaml)
