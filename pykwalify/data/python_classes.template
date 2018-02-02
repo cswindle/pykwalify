@@ -54,7 +54,8 @@ class ${class_name}(object):
             ${name.replace('-', '_')} = ${quote_string_values(entry, entry.get('default'))}
         self._${name.replace('-', '_')} = ${name.replace('-', '_')}
     % endif
-        self.__items['${name}'] = self._${name.replace('-', '_')}
+        if document and document.get('${name}'):
+            self.__items['${name}'] = self._${name.replace('-', '_')}
 % endfor
 
     def __iter__(self):
