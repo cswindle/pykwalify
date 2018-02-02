@@ -22,6 +22,7 @@ class ${class_name}(object):
 
     def __init__(self, document):
         self.__items = {}
+        self.__properties = []
 
         self._yaml_document = document
 % for (name, entry) in items.iteritems():
@@ -56,6 +57,8 @@ class ${class_name}(object):
     % endif
         if document and document.get('${name}'):
             self.__items['${name}'] = self._${name.replace('-', '_')}
+
+        self.__properties.append('${name}')
 % endfor
 
     def __iter__(self):
@@ -66,6 +69,9 @@ class ${class_name}(object):
 
     def iteritems(self):
         return self.__items.iteritems()
+
+    def properties(self):
+        return self.__properties
 
     @property
     def yaml_document(self):
