@@ -9,6 +9,9 @@ def quote_string_values(entry, value):
         return json.dumps(value)
     else:
         return "{0}".format(value)
+
+def get_entry_name(name):
+    return name.lower().replace('-', '_')
 %>
 import copy
 import utils
@@ -29,36 +32,36 @@ class ${class_name}(object):
 
     % if entry.get('type') == 'map':
         if document:
-            ${name.replace('-', '_')} = document.get('${name}')
+            value = document.get('${name}')
         else:
-            ${name.replace('-', '_')} = None
-        self._${name.replace('-', '_')} = ${entry['class']}(${name.replace('-', '_')})
+            value = None
+        self._${get_entry_name(name)} = ${entry['class']}(value)
     % elif entry.get('type') == 'seq':
       % if 'class' in entry['sequence'][0]:
-        self._${name.replace('-', '_')} = []
+        self._${get_entry_name(name)} = []
         if document:
             for entry in document.get('${name}', []):
-                self._${name.replace('-', '_')}.append(${entry['sequence'][0]['class']}(entry))
+                self._${get_entry_name(name)}.append(${entry['sequence'][0]['class']}(entry))
       % else:
         if document:
-            ${name.replace('-', '_')} = document.get('${name}', [])
+            values = document.get('${name}', [])
         else:
-            ${name.replace('-', '_')} = None
-        self._${name.replace('-', '_')} = ${name.replace('-', '_')}
+            values = []
+        self._${get_entry_name(name)} = values
       % endif
     % else:
         if document:
-            ${name.replace('-', '_')} = document.get(
+            value = document.get(
                 '${name}',
                 ${quote_string_values(entry, entry.get('default'))})
         else:
-            ${name.replace('-', '_')} = ${quote_string_values(entry, entry.get('default'))}
-        self._${name.replace('-', '_')} = ${name.replace('-', '_')}
+            value = ${quote_string_values(entry, entry.get('default'))}
+        self._${get_entry_name(name)} = value
     % endif
         if document and document.get('${name}'):
-            self.__items['${name}'] = self._${name.replace('-', '_')}
+            self.__items['${name}'] = self._${get_entry_name(name)}
 
-        self.__properties['${name}'] = self._${name.replace('-', '_')}
+        self.__properties['${name}'] = self._${get_entry_name(name)}
 % endfor
 
     def __iter__(self):
@@ -82,8 +85,8 @@ class ${class_name}(object):
 % for (name, entry) in items.iteritems():
 
     @property
-    def ${name.replace('-', '_')}(self):
-        return self._${name.replace('-', '_')}
+    def ${get_entry_name(name)}(self):
+        return self._${get_entry_name(name)}
 % endfor
 
     def __contains__(self, key):
